@@ -65,7 +65,8 @@ public class SignUp extends AppCompatActivity{
 
     // UI references.
     private EditText EmailView;
-    private EditText StudentIDView;
+    private EditText PhoneNumberIDView;
+    private EditText PasswordIDView;
     private EditText FirstNameView;
     private EditText LastnameView;
     private View mProgressView;
@@ -88,9 +89,10 @@ public class SignUp extends AppCompatActivity{
         EmailView = (EditText) findViewById(R.id.email);
         FirstNameView = (EditText) findViewById(R.id.firstname);
         LastnameView = (EditText) findViewById(R.id.lastname);
-        StudentIDView = (EditText) findViewById(R.id.studentid);
+        PhoneNumberIDView = (EditText) findViewById(R.id.phonenumberid);
+        PasswordIDView = (EditText) findViewById(R.id.passwordid);
 
-        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_up_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,13 +130,15 @@ public class SignUp extends AppCompatActivity{
         EmailView.setError(null);
         LastnameView.setError(null);
         FirstNameView.setError(null);
-        StudentIDView.setError(null);
+        PhoneNumberIDView.setError(null);
+        PasswordIDView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = EmailView.getText().toString();
         String firstname = FirstNameView.getText().toString();
         String lastname = LastnameView.getText().toString();
-        String studentid = StudentIDView.getText().toString();
+        String phonenumber = PhoneNumberIDView.getText().toString();
+        String password = PasswordIDView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -153,11 +157,19 @@ public class SignUp extends AppCompatActivity{
             cancel = true;
         }
         // Check for a valid studentid, if the user entered one.
-        if (TextUtils.isEmpty(studentid)) {
-            StudentIDView.setError(getString(R.string.error_empty_field));
-            focusView = StudentIDView;
+        if (TextUtils.isEmpty(password)) {
+            PasswordIDView.setError(getString(R.string.error_empty_field));
+            focusView = PasswordIDView;
             cancel = true;
         }
+
+        // Check for a valid studentid, if the user entered one.
+        if (TextUtils.isEmpty(phonenumber)) {
+            PhoneNumberIDView.setError(getString(R.string.error_empty_field));
+            focusView = PhoneNumberIDView;
+            cancel = true;
+        }
+
 
 
         // Check for a valid email address.
@@ -179,58 +191,10 @@ public class SignUp extends AppCompatActivity{
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            sendingtask = new sendingTask(email,firstname,lastname,studentid);
+            sendingtask = new sendingTask(email,firstname,lastname,password,phonenumber);
             sendingtask.execute((Void) null);
 
         }
-    }
-
-    private Student checkIfStudentAlreadyExist(String ID){
-        String studentid = "";
-        String lastname = "";
-        String firstname = "";
-        Student student;
-        ArrayList<Student> students = new ArrayList<Student>();
-
-        try {
-            JsonReader reader = new JsonReader(new InputStreamReader(getApplicationContext().getAssets().open("AUI_IDs.json")));
-            reader.beginArray();
-            while (reader.hasNext()) {
-                reader.beginObject();
-                while (reader.hasNext()) {
-                    String name = reader.nextName();
-                    if(name.equals("ID")){
-                        studentid = reader.nextString();
-                    }
-                    else if(name.equals("Firstname")){
-                        firstname = firstname.concat(reader.nextString());
-                    }
-                    else if(name.equals("Lastname")){
-                        lastname = lastname.concat(reader.nextString());
-                    }
-                    else{
-                        reader.skipValue();
-                    }
-
-                }
-                reader.endObject();
-                student = new Student(studentid,studentid+"@aui.ma",firstname,lastname);
-                students.add(student);
-                studentid = "";
-                lastname = "";
-                firstname = "";
-            }
-            reader.endArray();
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        for (Student st : students){
-            if(ID.contains(st.studentid))
-                return st;
-        }
-        return null;
     }
 
     private boolean isEmailValid(String email) {
@@ -283,13 +247,15 @@ public class SignUp extends AppCompatActivity{
         String email ;
         String firstname ;
         String lastname;
-        String studentid ;
+        String password;
+        String phonenumber;
 
-        sendingTask(String email,String firstname,String lastname,String studentid) {
+        sendingTask(String email,String firstname,String lastname,String password,String phonenumber) {
             this.email = email;
             this.firstname = firstname;
             this.lastname = lastname;
-            this.studentid = studentid;
+            this.phonenumber = phonenumber;
+            this.password = password;
         }
 
         private JSONObject constructJsonObject() {
@@ -298,7 +264,8 @@ public class SignUp extends AppCompatActivity{
                 jsonObject.accumulate("firstNameID", firstname);
                 jsonObject.accumulate("lastNameID", lastname);
                 jsonObject.accumulate("emailID", email);
-                jsonObject.accumulate("StudentID", studentid);
+                jsonObject.accumulate("password", password);
+                jsonObject.accumulate("phonenumber", phonenumber);
                 return jsonObject;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -396,7 +363,7 @@ public class SignUp extends AppCompatActivity{
                     public void run() {
                         sendingtask = null;
                         Toast.makeText(getApplicationContext(), "You have signed up successfully", Toast.LENGTH_LONG).show();
-                        Intent i=new Intent(signUpActivity.this,MainActivity.class);
+                        Intent i=new Intent(SignUp.this,DashBoard.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(i);
                     }

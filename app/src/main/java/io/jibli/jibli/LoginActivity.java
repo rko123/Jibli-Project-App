@@ -68,12 +68,13 @@ public class LoginActivity extends AppCompatActivity{
 
     // UI references.
     private EditText EmailView;
-    private EditText StudentIDView;
-    private EditText FirstNameView;
-    private EditText LastnameView;
+    private EditText PassowrdView;
     private View mProgressView;
     private View mLoginFormView;
+    private TextView ClickView;
     private Button mEmailSignInButton;
+    String email ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,15 +83,16 @@ public class LoginActivity extends AppCompatActivity{
         setupActionBar();
 
         //as a test then change it to the link later
+/*
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             qr_code = extras.getString("qr_code");
         }
+*/
 
         EmailView = (EditText) findViewById(R.id.email);
-        FirstNameView = (EditText) findViewById(R.id.firstname);
-        LastnameView = (EditText) findViewById(R.id.lastname);
-        StudentIDView = (EditText) findViewById(R.id.studentid);
+        PassowrdView = (EditText) findViewById(R.id.password);
+
 
         mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -102,6 +104,20 @@ public class LoginActivity extends AppCompatActivity{
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        ClickView = (TextView) findViewById(R.id.click);
+        ClickView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(LoginActivity.this,SignUp.class);
+                startActivity(i);
+
+            }
+        });
+
+
+
+
     }
 
 
@@ -128,36 +144,19 @@ public class LoginActivity extends AppCompatActivity{
 
         // Reset errors.
         EmailView.setError(null);
-        LastnameView.setError(null);
-        FirstNameView.setError(null);
-        StudentIDView.setError(null);
+        PassowrdView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = EmailView.getText().toString();
-        String firstname = FirstNameView.getText().toString();
-        String lastname = LastnameView.getText().toString();
-        String studentid = StudentIDView.getText().toString();
+        String password = PassowrdView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid lastname, if the user entered one.
-        if (TextUtils.isEmpty(lastname)) {
-            LastnameView.setError(getString(R.string.error_empty_field));
-            focusView = LastnameView;
-            cancel = true;
-        }
-
-        // Check for a valid firstname, if the user entered one.
-        if (TextUtils.isEmpty(firstname)) {
-            FirstNameView.setError(getString(R.string.error_empty_field));
-            focusView = FirstNameView;
-            cancel = true;
-        }
         // Check for a valid studentid, if the user entered one.
-        if (TextUtils.isEmpty(studentid)) {
-            StudentIDView.setError(getString(R.string.error_empty_field));
-            focusView = StudentIDView;
+        if (TextUtils.isEmpty(password)) {
+            PassowrdView.setError(getString(R.string.error_empty_field));
+            focusView = PassowrdView;
             cancel = true;
         }
 
@@ -181,59 +180,12 @@ public class LoginActivity extends AppCompatActivity{
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            sendingtask = new sendingTask(email,firstname,lastname,studentid);
+            sendingtask = new sendingTask(email,password);
             sendingtask.execute((Void) null);
 
         }
     }
 
-    private Student checkIfStudentAlreadyExist(String ID){
-        String studentid = "";
-        String lastname = "";
-        String firstname = "";
-        Student student;
-        ArrayList<Student> students = new ArrayList<Student>();
-
-        try {
-            JsonReader reader = new JsonReader(new InputStreamReader(getApplicationContext().getAssets().open("AUI_IDs.json")));
-            reader.beginArray();
-            while (reader.hasNext()) {
-                reader.beginObject();
-                while (reader.hasNext()) {
-                    String name = reader.nextName();
-                    if(name.equals("ID")){
-                        studentid = reader.nextString();
-                    }
-                    else if(name.equals("Firstname")){
-                        firstname = firstname.concat(reader.nextString());
-                    }
-                    else if(name.equals("Lastname")){
-                        lastname = lastname.concat(reader.nextString());
-                    }
-                    else{
-                        reader.skipValue();
-                    }
-
-                }
-                reader.endObject();
-                student = new Student(studentid,studentid+"@aui.ma",firstname,lastname);
-                students.add(student);
-                studentid = "";
-                lastname = "";
-                firstname = "";
-            }
-            reader.endArray();
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        for (Student st : students){
-            if(ID.contains(st.studentid))
-                return st;
-        }
-        return null;
-    }
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
@@ -281,26 +233,19 @@ public class LoginActivity extends AppCompatActivity{
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class sendingTask extends AsyncTask<Void, Void, Boolean> {
-        String email ;
-        String firstname ;
-        String lastname;
-        String studentid ;
+    public class  sendingTask extends AsyncTask<Void, Void, Boolean> {
+        String password ;
 
-        sendingTask(String email,String firstname,String lastname,String studentid) {
-            this.email = email;
-            this.firstname = firstname;
-            this.lastname = lastname;
-            this.studentid = studentid;
+        sendingTask(String emailreceived,String password) {
+            email = emailreceived;
+            this.password = password;
         }
 
         private JSONObject constructJsonObject() {
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.accumulate("firstNameID", firstname);
-                jsonObject.accumulate("lastNameID", lastname);
                 jsonObject.accumulate("emailID", email);
-                jsonObject.accumulate("StudentID", studentid);
+                jsonObject.accumulate("password", password);
                 return jsonObject;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -315,7 +260,7 @@ public class LoginActivity extends AppCompatActivity{
             BufferedReader reader = null;
             System.out.println(JsonDATA);
             try {
-                URL url = new URL("http://www.scantosign.com/sheet?q="+qr_code);
+                URL url = new URL("http://www.scantosign.com/sheet?q=");
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setDoOutput(true);
                 // is output buffer writter
@@ -400,11 +345,23 @@ public class LoginActivity extends AppCompatActivity{
                         Toast.makeText(getApplicationContext(), "You have signed in successfully", Toast.LENGTH_LONG).show();
                         Intent i=new Intent(LoginActivity.this,DashBoard.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        i.putExtra("email", email);
+
                         startActivity(i);
                     }
                 });
                 return true;
-            } else {
+            }
+            if (result != null && result.contains("NO")) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        sendingtask = null;
+                        Toast.makeText(getApplicationContext(), "Your email/password do not match", Toast.LENGTH_LONG).show();
+                    }
+                });
+                return true;
+            }
+            else {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         sendingtask = null;
