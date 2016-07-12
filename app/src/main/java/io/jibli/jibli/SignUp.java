@@ -1,6 +1,5 @@
 package io.jibli.jibli;
 
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -55,11 +54,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.jibli.jibli.R;
-
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class LoginActivity extends AppCompatActivity{
+public class SignUp extends AppCompatActivity{
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -74,11 +71,12 @@ public class LoginActivity extends AppCompatActivity{
     private View mProgressView;
     private View mLoginFormView;
     private Button mEmailSignInButton;
+    String qr_code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_sign_up);
         setupActionBar();
 
         //as a test then change it to the link later
@@ -397,8 +395,8 @@ public class LoginActivity extends AppCompatActivity{
                 runOnUiThread(new Runnable() {
                     public void run() {
                         sendingtask = null;
-                        Toast.makeText(getApplicationContext(), "You have signed in successfully", Toast.LENGTH_LONG).show();
-                        Intent i=new Intent(LoginActivity.this,DashBoard.class);
+                        Toast.makeText(getApplicationContext(), "You have signed up successfully", Toast.LENGTH_LONG).show();
+                        Intent i=new Intent(signUpActivity.this,MainActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(i);
                     }
