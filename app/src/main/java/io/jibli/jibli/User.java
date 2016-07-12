@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package User;
+package io.jibli.jibli;
+
 
 
 /**
@@ -75,12 +76,6 @@ public class User {
       this.transact = transact;
    }
 
-
-
- public boolean authenticate(String pass,String email) {
-        return (this.passWord.equals(pass) && this.email.equals(email));
-    }
- 
 
 
 
