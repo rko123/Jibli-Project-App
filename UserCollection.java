@@ -7,6 +7,7 @@ package User;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 
 /**
@@ -38,8 +39,15 @@ public class UserCollection {
  
    public boolean authenticateUser (User user)
    {
-      int index = users.indexOf(user);
-      return index > 0;
+        ListIterator<User> iter = users.listIterator();
+        while (iter.hasNext()) {
+            User us = iter.next();
+            if (us.getPassWord().equals(user.getPassWord()) && user.getEmail().equalsIgnoreCase(user.getEmail())) {
+               return true;
+            } 
+            }
+            return false;
+ 
    }
    
       

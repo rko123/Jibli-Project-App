@@ -5,8 +5,7 @@
  */
 package User;
 
-import java.util.Date;
-import java.util.Timer;
+
 /**
  *
  * @author Mohamed
@@ -16,24 +15,16 @@ public class User {
    private String name;
    private String email;
    private String phoneNumber;
-   private String prodcutDescr;
-   private double price;
-   private String location;
-   private double profit;
-   private String comments;
+   private int rating;
+   private double transact;
 
-
-   public User(String passWord, String name, String email, String phoneNumber, String prodcutDescr, double price, String location, double profit, String comments, String destination, String departure, Date depDate, Timer depTime) {
+   public User(String passWord, String name, String email, String phoneNumber, int rating, double transact) {
       this.passWord = passWord;
       this.name = name;
       this.email = email;
       this.phoneNumber = phoneNumber;
-      this.prodcutDescr = prodcutDescr;
-      this.price = price;
-      this.location = location;
-      this.profit = profit;
-      this.comments = comments;
-  
+      this.rating = rating;
+      this.transact = transact;
    }
 
    public String getPassWord() {
@@ -68,57 +59,30 @@ public class User {
       this.phoneNumber = phoneNumber;
    }
 
-   public String getProdcutDescr() {
-      return prodcutDescr;
+   public int getRating() {
+      return rating;
    }
 
-   public void setProdcutDescr(String prodcutDescr) {
-      this.prodcutDescr = prodcutDescr;
+   public void setRating(int rating) {
+      this.rating = rating;
    }
 
-   public double getPrice() {
-      return price;
+   public double getTransact() {
+      return transact;
    }
 
-   public void setPrice(double price) {
-      this.price = price;
+   public void setTransact(double transact) {
+      this.transact = transact;
    }
 
-   public String getLocation() {
-      return location;
-   }
 
-   public void setLocation(String location) {
-      this.location = location;
-   }
 
-   public double getProfit() {
-      return profit;
-   }
-
-   public void setProfit(double profit) {
-      this.profit = profit;
-   }
-
-   public String getComments() {
-      return comments;
-   }
-
-   public void setComments(String comments) {
-      this.comments = comments;
-   }
-
-   }
  public boolean authenticate(String pass,String email) {
         return (this.passWord.equals(pass) && this.email.equals(email));
     }
  
 
 
-   @Override
-   public String toString() {
-      return "User{" + "passWord=" + passWord + ", name=" + name + ", email=" + email + ", phoneNumber=" + phoneNumber + ", prodcutDescr=" + prodcutDescr + ", price=" + price + ", location=" + location + ", profit=" + profit + ", comments=" + comments + ", destination=" + destination + ", departure=" + departure + ", depDate=" + depDate + ", depTime=" + depTime + '}';
-   }
 
   
    
