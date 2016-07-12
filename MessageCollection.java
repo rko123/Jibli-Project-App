@@ -37,17 +37,24 @@ public class MessageCollection {
     public boolean removemessage(Message msg) {
         return messages.remove(msg);
     }
-    public void assigneMessage (Message msg)
+    
+    public ArrayList<Message>  retrieveconversation (int userid)
     {
         ListIterator<Message> iter = messages.listIterator();
+        ArrayList<Message> results = new ArrayList<>();
         while (iter.hasNext()) {
             Message ms = iter.next();
-            if (ms.getReceiver_ID().equalsIgnoreCase(msg.getReceiver_ID())) {
-                ms.setContent(msg.getContent());
-            }
+             if (ms.getSender_ID()==userid) {
+               results.add(ms);
+             }
+             else if (ms.getReceiver_ID()==userid)
+                results.add(ms); 
         }
-
+           
+        return results;  
     }
+ 
+    
     public void modifyMessage(Message search, Message newMsg) {
    
         int index = messages.indexOf(search);
@@ -55,11 +62,7 @@ public class MessageCollection {
             messages.set(index, newMsg);
         }
     }
-
-   
-
   
-
     @Override
     public String toString() {
         String str = "";
