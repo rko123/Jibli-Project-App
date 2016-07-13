@@ -21,6 +21,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
+import android.util.JsonReader;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -258,7 +259,69 @@ public class MessageCollection extends AppCompatActivity {
         }
     }
 
-    public Message UpdateMessages() {
+
+
+    public void JsonMessageReader(InputStream inputStream) throws IOException {
+        try {
+            readJsonStream(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readJsonStream(InputStream in) throws IOException {
+        JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+        try {
+            readMessagesArray(reader);
+        }
+        finally{
+            reader.close();
+        }
+    }
+
+
+    public void readMessagesArray(JsonReader reader) throws IOException {
+        //read the array and go through all the objects inside
+        reader.beginArray();
+        while (reader.hasNext()) {
+            readMessage(reader);
+        }
+        reader.endArray();
+    }
+
+
+    public void readMessage(JsonReader reader) throws IOException {
+        //assume that if not specificed these proprieties are null
+        String M_MESSAGE;
+        String M_DATE;
+        int SENDER;
+        int RECEIVER;
+
+        //start reading an object from the array
+        reader.beginObject();
+        //look for name/value pairs i.e. filename & Message
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("SENDER")) {
+                SENDER =  reader.nextInt();
+            } else if (name.equals("RECEIVER")) {
+                RECEIVER = reader.nextInt();
+            } else if (name.equals("M_MESSAGE")) {
+                M_MESSAGE =  reader.nextString();
+            } else if (name.equals("M_DATE")) {
+                M_DATE = reader.nextString();
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        Message message = new Message(M_MESSAGE,M_DATE,RECEIVER,SENDER);
+        messages.add(message);
+
+    }
+
+
+    public void UpdateMessages() {
 
         InputStream is = null;
         JSONObject jObj = null;
@@ -293,33 +356,12 @@ public class MessageCollection extends AppCompatActivity {
             return null;
         }
 
-
-
-
-        try {
-
-            reader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"), 8);
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            is.close();
-            json = sb.toString();
-
-        } catch (Exception e) {
-
-        }
-
-        // try parse the string to a JSON object
-        try {
-            jObj = new JSONObject(json);
-
-        } catch (JSONException e) {
-
-        }
+        inputStream
 
         // return JSON String
+
+
+        jObj.
         try {
             return (new Message((String)jObj.get("M_MESSAGE"),(Date) jObj.get("M_DATE"),(String)jObj.get("RECEIVER"),(String)jObj.get("SENDER")));
         } catch (JSONException e) {

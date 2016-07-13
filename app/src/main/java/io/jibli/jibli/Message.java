@@ -25,6 +25,12 @@ public class Message {
       this.receiver_ID = receiver_ID;
    }
 
+   public Message(String content, String date, int sender_ID, int receiver_ID) {
+      this.content = content;
+      this.date = date;
+      this.sender_ID = sender_ID;
+      this.receiver_ID = receiver_ID;
+   }
 
    public Message(String content, Date date, String sender_ID, String receiver_ID) {
       this.content = content;
