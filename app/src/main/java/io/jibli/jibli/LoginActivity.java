@@ -65,6 +65,8 @@ public class LoginActivity extends AppCompatActivity{
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private sendingTask sendingtask = null;
+    public static MessageCollection messageCollection;
+
 
     // UI references.
     private EditText EmailView;
